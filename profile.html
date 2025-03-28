@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .profile-container {
+            background-color: white;
+            padding: 20px;
+            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #02e5e3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: black;
+        }
+
+        #messageBox {
+            margin-top: 10px;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <h2>Manage Profile</h2>
+        <form id="profileForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" required disabled>
+
+            <label for="company">Company Name:</label>
+            <input type="text" id="company">
+
+            <button type="submit">Update Profile</button>
+        </form>
+
+        <p id="messageBox"></p>
+        <button onclick="window.location.href='dashboard-client.html'">Back to Dashboard</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const profileForm = document.getElementById("profileForm");
+            const messageBox = document.getElementById("messageBox");
+
+            // Ensure only logged-in clients can access
+            let loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            if (!loggedInUser || loggedInUser.role !== "client") {
+                alert("Access Denied!");
+                window.location.href = "index.html";
+                return;
+            }
+
+            // Populate form with user details
+            document.getElementById("name").value = loggedInUser.name || "";
+            document.getElementById("email").value = loggedInUser.email || "";
+            document.getElementById("company").value = loggedInUser.company || "";
+
+            // Handle form submission
+            profileForm.addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent form submission
+
+                // Get updated values
+                loggedInUser.name = document.getElementById("name").value.trim();
+                loggedInUser.company = document.getElementById("company").value.trim();
+
+                // Save back to sessionStorage
+                sessionStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));
+
+                // Show success message
+                messageBox.textContent = "Profile updated successfully!";
+                setTimeout(() => { messageBox.textContent = ""; }, 3000);
+            });
+        });
+    </script>
+
+</body>
+</html>

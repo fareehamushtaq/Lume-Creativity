@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applied Jobs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 { color: #333; }
+        ul { list-style: none; padding: 0; }
+        .job-item {
+            background: #e3f2fd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Applied Jobs</h2>
+        <ul id="appliedJobsList"></ul>
+        <button onclick="window.location.href='dashboard-freelancer.html'">Back to Dashboard</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const appliedJobsList = document.getElementById("appliedJobsList");
+            let appliedJobs = JSON.parse(localStorage.getItem("appliedJobs")) || [];
+
+            function displayAppliedJobs() {
+                appliedJobsList.innerHTML = appliedJobs.length ? "" : "<p>No jobs applied yet.</p>";
+
+                appliedJobs.forEach(job => {
+                    let li = document.createElement("li");
+                    li.classList.add("job-item");
+                    li.innerHTML = `
+                        <strong>${job.title}</strong> (${job.category})<br>
+                        <small>Budget: $${job.budget}</small><br>
+                        <p>${job.description}</p>
+                    `;
+                    appliedJobsList.appendChild(li);
+                });
+            }
+
+            displayAppliedJobs();
+        });
+    </script>
+</body>
+</html>

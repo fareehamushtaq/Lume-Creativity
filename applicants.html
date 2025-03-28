@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicants</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .applicant-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .applicant-item {
+            background: #e3f2fd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: left;
+            position: relative;
+        }
+
+        .remove-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .remove-btn:hover {
+            background: darkred;
+        }
+
+        #messageBox {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            background: #02e5e3;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: black;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Applicants for Your Jobs</h2>
+        <ul class="applicant-list" id="applicantList"></ul>
+        <p id="messageBox"></p>
+        <button onclick="window.location.href='dashboard-client.html'">Back to Dashboard</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const applicantList = document.getElementById("applicantList");
+            const messageBox = document.getElementById("messageBox");
+
+            // Ensure only logged-in clients can access
+            const loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            if (!loggedInUser || loggedInUser.role !== "client") {
+                alert("Access Denied!");
+                window.location.href = "index.html";
+                return;
+            }
+
+            // Fetch applicants from localStorage
+            let applications = JSON.parse(localStorage.getItem("applications")) || [];
+
+            // Show applicants
+            function displayApplicants() {
+                applicantList.innerHTML = ""; // Clear list first
+
+                if (applications.length === 0) {
+                    messageBox.textContent = "No applicants yet.";
+                    return;
+                }
+
+                applications.forEach((app, index) => {
+                    let li = document.createElement("li");
+                    li.classList.add("applicant-item");
+                    li.innerHTML = `
+                        <strong>Job: ${app.jobTitle}</strong><br>
+                        <small>Freelancer: ${app.freelancerName}</small><br>
+                        <p>${app.coverLetter}</p>
+                        <button class="remove-btn" onclick="removeApplication(${index})">Remove</button>
+                    `;
+                    applicantList.appendChild(li);
+                });
+            }
+
+            // Remove an application
+            window.removeApplication = function (index) {
+                applications.splice(index, 1); // Remove application
+                localStorage.setItem("applications", JSON.stringify(applications)); // Update storage
+                displayApplicants(); // Refresh list
+                messageBox.textContent = "Application removed.";
+                setTimeout(() => (messageBox.textContent = ""), 3000);
+            };
+
+            displayApplicants();
+        });
+    </script>
+
+</body>
+</html>

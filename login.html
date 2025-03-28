@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #02e5e3, #2575fc);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Form Container */
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* Input Fields */
+        .input-group {
+            margin: 15px 0;
+            padding-right: 10px;
+            text-align: left;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Button */
+        button {
+            width: 100%;
+            background: #02e5e3;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #2575fc;
+        }
+
+        /* Message */
+        #message {
+            margin-top: 10px;
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .container {
+                width: 85%;
+             
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit">Login</button>
+            <p>Don't have an account? <a href="registration.html">Register here</a></p>
+            <p id="message"></p>
+        </form>
+    </div>
+
+    <script>
+        
+        document.addEventListener("DOMContentLoaded", function () {
+    const loginForm = document.getElementById("loginForm");
+
+    loginForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+
+        const user = users.find(u => u.email === email && u.password === password);
+
+        if (!user) {
+            alert("Invalid email or password.");
+            return;
+        }
+
+        console.log("User found:", user); // Debugging
+
+        // Save to sessionStorage
+        sessionStorage.setItem("loggedInUser", JSON.stringify(user));
+
+        // Redirect based on role
+        if (user.role === "freelancer") {
+            window.location.href = "dashboard-freelancer.html";
+        } else {
+            window.location.href = "dashboard-client.html";
+        }
+    });
+});
+
+    </script>
+</body>
+</html>

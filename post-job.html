@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Job</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+/* Job Post Form Container */
+.post_job{
+    background-color: white;
+    padding: 20px;
+    width: 400px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+/* Form Heading */
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+/* Form Inputs */
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Submit Button */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #02e5e3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: black;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 500px) {
+    .container {
+        width: 90%;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="post_job">
+        <h2>Post a Job</h2>
+        <form action="" id="jobForm">
+            <label for="title">Job Title:</label>
+            <input type="text" id="title" required>
+
+            <label for="description">Job Description:</label>
+            <textarea id="description" required></textarea>
+
+            <label for="category">Category:</label>
+            <select id="category" required>
+                <option value="">Select a Category</option>
+                <option value="Web Development">Web Development</option>
+                <option value="Graphic Design">Graphic Design</option>
+                <option value="Writing & Translation">Writing & Translation</option>
+            </select>
+
+            <label for="budget">Budget ($)</label>
+            <input type="number" id="budget" required>
+
+            <button type="submit">Post Job</button>
+        </form>
+
+        <!-- ✅ Add this to show success/error messages -->
+        <div id="messageBox"></div>  
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const jobForm = document.getElementById("jobForm");
+    const messageBox = document.getElementById("messageBox");
+
+    // ✅ Check if elements exist before proceeding
+    if (!jobForm || !messageBox) {
+        console.error("Form or message box not found!");
+        return;
+    }
+
+    jobForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Stop page reload
+
+        // Get input values
+        const title = document.getElementById("title").value.trim();
+        const category = document.getElementById("category").value;
+        const description = document.getElementById("description").value.trim();
+        const budget = document.getElementById("budget").value.trim();
+
+        // Validation: Check if any field is empty
+        if (!title || !category || !description || !budget) {
+            showMessage("Please fill in all fields.", "error");
+            return;
+        }
+
+        // Create a job object
+        const jobData = { title, category, description, budget };
+
+        // Retrieve existing jobs from localStorage
+        let jobs = JSON.parse(localStorage.getItem("jobs")) || [];
+
+        // Add the new job to the list
+        jobs.push(jobData);
+
+        // Save updated job list to localStorage
+        localStorage.setItem("jobs", JSON.stringify(jobs));
+
+        // Show success message
+        showMessage("Job posted successfully!", "success");
+
+        // Clear form fields
+        jobForm.reset();
+    });
+
+    // Function to display a message
+    function showMessage(message, type) {
+        console.log("Message Displayed:", message, type);
+        messageBox.textContent = message;
+        messageBox.className = type; // Add success or error class
+
+        // Remove the message after 3 seconds
+        setTimeout(() => {
+            messageBox.textContent = "";
+        }, 3000);
+    }
+});
+
+    </script>
+</body>
+</html>

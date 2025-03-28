@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelancer Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 { color: #333; }
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            background: #02e5e3;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background: black; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Freelancer Profile</h2>
+        <p><strong>Name:</strong> <span id="name"></span></p>
+        <p><strong>Email:</strong> <span id="email"></span></p>
+        <button onclick="editProfile()">Edit Profile</button>
+        <button onclick="window.location.href='dashboard-freelancer.html'">Back to Dashboard</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const nameField = document.getElementById("name");
+            const emailField = document.getElementById("email");
+
+            let user = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            if (user) {
+                nameField.textContent = user.name;
+                emailField.textContent = user.email;
+            } else {
+                nameField.textContent = "Guest";
+                emailField.textContent = "Not logged in";
+            }
+        });
+
+        function editProfile() {
+            alert("Profile editing is not available yet.");
+        }
+    </script>
+</body>
+</html>

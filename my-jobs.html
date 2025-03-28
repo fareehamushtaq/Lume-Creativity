@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Jobs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .job-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .job-item {
+            background: #e3f2fd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .job-details {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .delete-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .delete-btn:hover {
+            background: darkred;
+        }
+
+        #messageBox {
+            margin-top: 10px;
+            font-weight: bold;
+            color: green;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            background: #02e5e3;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: black;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .job-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .delete-btn {
+                width: 100%;
+                text-align: center;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>My Posted Jobs</h2>
+        <ul class="job-list" id="jobList"></ul>
+        <p id="messageBox"></p>
+        <button onclick="window.location.href='dashboard-client.html'">Back to Dashboard</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const jobList = document.getElementById("jobList");
+            const messageBox = document.getElementById("messageBox");
+
+            // Ensure only logged-in clients can access
+            const loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+            if (!loggedInUser || loggedInUser.role !== "client") {
+                alert("Access Denied!");
+                window.location.href = "index.html";
+                return;
+            }
+
+            // Fetch jobs from localStorage
+            let jobs = JSON.parse(localStorage.getItem("jobs")) || [];
+
+            // Show jobs
+            function displayJobs() {
+                jobList.innerHTML = ""; // Clear list first
+
+                if (jobs.length === 0) {
+                    messageBox.textContent = "No jobs posted yet.";
+                    return;
+                }
+
+                jobs.forEach((job, index) => {
+                    let li = document.createElement("li");
+                    li.classList.add("job-item");
+                    li.innerHTML = `
+                        <div class="job-details">
+                            <strong>${job.title}</strong> (${job.category})<br>
+                            <small>Budget: $${job.budget}</small><br>
+                            <p>${job.description}</p>
+                        </div>
+                        <button class="delete-btn" onclick="deleteJob(${index})">Delete</button>
+                    `;
+                    jobList.appendChild(li);
+                });
+            }
+
+            // Delete a job
+            window.deleteJob = function (index) {
+                jobs.splice(index, 1); // Remove job from array
+                localStorage.setItem("jobs", JSON.stringify(jobs)); // Update storage
+                displayJobs(); // Refresh list
+                messageBox.textContent = "Job deleted successfully.";
+                setTimeout(() => (messageBox.textContent = ""), 3000);
+            };
+
+            displayJobs();
+        });
+    </script>
+
+</body>
+</html>
